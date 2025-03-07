@@ -1,11 +1,10 @@
 "use client";
-
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-function Hero() {
+function Heroo() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
     () => ["amazing", "new", "wonderful", "beautiful", "smart"],
@@ -82,4 +81,4 @@ function Hero() {
   );
 }
 
-export { Hero };
+export { Heroo};

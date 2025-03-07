@@ -58,7 +58,7 @@ interface Navbar1Props {
 
 const Navbar1 = ({
   logo = {
-    url: "https://www.shadcnblocks.com",
+    url: "/",
     src: "https://www.shadcnblocks.com/images/block/block-1.svg",
     alt: "logo",
     title: "Zentry",
@@ -110,7 +110,7 @@ const Navbar1 = ({
           title: "Contact Us",
           description: "We are here to help you with any questions you have",
           icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
+          url: "/contact",
         },
         {
           title: "Status",
@@ -127,12 +127,12 @@ const Navbar1 = ({
       ],
     },
     {
-      title: "Pricing",
-      url: "#",
+      title: "About",
+      url: "/about",
     },
     {
-      title: "Blog",
-      url: "#",
+      title: "Privacy Policy",
+      url: "/privacy-policy",
     },
   ],
   auth = {
@@ -233,6 +233,8 @@ const Navbar1 = ({
   );
 };
 
+
+
 const renderMenuItem = (item: MenuItem) => {
   if (item.items) {
     return (
@@ -255,7 +257,7 @@ const renderMenuItem = (item: MenuItem) => {
       className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-accent-foreground"
       href={item.url}
     >
-      {item.title}
+      {item.title}  
     </a>
   );
 };
