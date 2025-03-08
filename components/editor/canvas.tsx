@@ -23,7 +23,7 @@ export function CanvasArea() {
   }
   
   return (
-    <div className="flex-1 overflow-auto bg-slate-900">
+    <div className="flex-1 overflow-auto">
       <div 
         className="min-h-full p-8"
         style={{ 

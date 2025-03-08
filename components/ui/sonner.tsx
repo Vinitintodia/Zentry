@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Toaster as Sonner, ToasterProps } from "sonner"
+import { Toaster as Sonner, ToasterProps, toast, ExternalToast } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
@@ -26,4 +26,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
   )
 }
 
+// Define ToastActionElement type
+type ToastActionElement = React.ReactElement<HTMLButtonElement>
+
 export { Toaster }
+export type { ToasterProps }
+export type { toast as ToastProps }
+export type { ToastActionElement }
+export type { ExternalToast }
