@@ -1,8 +1,8 @@
 import { Navbar1 } from "@/components/Navbar";
-import { Heroo } from "@/components/ui/animated-hero";
+import { Heroo } from "@/components/animated-hero";
 import { Feature108 } from "@/components/features-tab";
 import Image from "next/image";
-import { Footerdemo } from "@/components/ui/footer-section";
+import { Footerdemo } from "@/components/footer-section";
 
 export default function Home() {
   return (

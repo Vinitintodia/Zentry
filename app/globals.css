@@ -2,7 +2,6 @@
 
 @import "tailwindcss";
 
-
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
@@ -151,7 +150,6 @@
 body {
   font-family: 'Space Grotesk', sans-serif;
 }
-
 
 .home {
   color:antiquewhite;

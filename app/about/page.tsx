@@ -1,6 +1,6 @@
 import { About1 } from "@/components/about";
 import { Navbar1 } from "@/components/Navbar";
-import { Footerdemo } from "@/components/ui/footer-section";
+import { Footerdemo } from "@/components/footer-section";
 
 export default function about() {
     return (
