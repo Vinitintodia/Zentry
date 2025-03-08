@@ -35,7 +35,7 @@ export default function EditorPage({ params }: EditorProps) {
   
   return (
     <EditorProvider initialTemplateId={templateId}>
-      <div className="flex h-screen flex-col overflow-hidden bg-background">
+      <div className="flex h-screen flex-col overflow-hidden bg-background dark:bg-gray-900 dark:text-white">
         <EditorHeader title={getTemplateTitle(templateId)} />
         <EditorToolbar />
         
@@ -50,4 +50,4 @@ export default function EditorPage({ params }: EditorProps) {
       </div>
     </EditorProvider>
   )
-} 
+}
