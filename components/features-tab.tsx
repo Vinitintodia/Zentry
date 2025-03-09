@@ -29,7 +29,7 @@ interface Feature108Props {
 
 const Feature108 = ({
   badge = "Zentry Features",
-  heading = "Tere ko bhi likhunga",
+  heading = "Everything You Need to Build Your Perfect Website",
   description = "Join us to build flawless web solutions.",
   tabs = [
     {
