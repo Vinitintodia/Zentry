@@ -53,13 +53,11 @@ function Footerdemo() {
               <a href="#" className="block transition-colors hover:text-primary">
                 About Us
               </a>
-              <a href="#" className="block transition-colors hover:text-primary">
-                Services
+             
+              <a href="/dashboard" className="block transition-colors hover:text-primary">
+                Products 
               </a>
-              <a href="#" className="block transition-colors hover:text-primary">
-                Products
-              </a>
-              <a href="#" className="block transition-colors hover:text-primary">
+              <a href="/contact" className="block transition-colors hover:text-primary">
                 Contact
               </a>
             </nav>

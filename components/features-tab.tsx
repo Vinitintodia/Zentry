@@ -29,51 +29,51 @@ interface Feature108Props {
 
 const Feature108 = ({
   badge = "Zentry Features",
-  heading = "A Collection of Website templates Built With Shadcn & Tailwind",
+  heading = "Everything You Need to Build Your Perfect Website",
   description = "Join us to build flawless web solutions.",
   tabs = [
     {
       value: "tab-1",
       icon: <Zap className="h-auto w-4 shrink-0" />,
-      label: "Boost Revenue",
+      label: "Design",
       content: {
-        badge: "Modern Tactics",
-        title: "Make your site a true standout.",
+        badge: "Effortless Customization",
+        title: "Introduction ",
         description:
-          "Discover new web trends that help you craft sleek, highly functional sites that drive traffic and convert leads into customers.",
+          "Why settle for AI-generated designs that don’t match your vision? Our intuitive editor lets you customize professional website templates exactly as you want—no coding required. Edit in real-time and download a fully structured Next.js project with a single command.",  
         buttonText: "See Plans",
         imageSrc:
-          "https://shadcnblocks.com/images/block/placeholder-dark-1.svg",
+          "/12C.jpg",
         imageAlt: "placeholder",
       },
     },
     {
       value: "tab-2",
       icon: <Pointer className="h-auto w-4 shrink-0" />,
-      label: "Higher Engagement",
+      label: "Customize",
       content: {
-        badge: "Expert Features",
-        title: "Boost your site with top-tier design.",
+        badge: "Precision Editing",
+        title: "Customization Benefits",
         description:
-          "Use stellar design to easily engage users and strengthen their loyalty. Create a seamless experience that keeps them coming back for more.",
+          "From colors to layouts, everything is in your hands. Unlike AI-generated websites, which often miss the mark, our editor ensures that every detail is tailored to your brand and purpose. Whether you're a freelancer, business owner, or hobbyist, you'll get a high-quality, editable template without compromise.",
         buttonText: "See Tools",
         imageSrc:
-          "https://shadcnblocks.com/images/block/placeholder-dark-2.svg",
+          "/hand.jpg",
         imageAlt: "placeholder",
       },
     },
     {
       value: "tab-3",
       icon: <Layout className="h-auto w-4 shrink-0" />,
-      label: "Stunning Layouts",
+      label: "Deploy",
       content: {
-        badge: "Elite Solutions",
-        title: "Build an advanced web experience.",
+        badge: "Code-Ready in Seconds",
+        title: "Seamless Deployment.",
         description:
-          "Lift your brand with modern tech that grabs attention and drives action. Create a digital experience that stands out from the crowd.",
+          "Once you're happy with your design, deploying is effortless. Download your customized template via Git Clone or NPX, and start building instantly. No extra setup, no hidden complexity—just your website, your way!",
         buttonText: "See Options",
         imageSrc:
-          "https://shadcnblocks.com/images/block/placeholder-dark-3.svg",
+          "/D12.jpg",
         imageAlt: "placeholder",
       },
     },

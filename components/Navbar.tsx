@@ -131,6 +131,10 @@ const Navbar1 = ({
       url: "/about",
     },
     {
+      title: "Dashboard",
+      url: "/dashboard",
+    },
+    {
       title: "Privacy Policy",
       url: "/privacy-policy",
     },
