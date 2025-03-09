@@ -106,10 +106,10 @@ export function EditorProvider({ children, initialTemplateId }: { children: Reac
     businessCtaTitleColor: "#ffffff",
     businessCtaTitleSize: "2.5rem",
     businessCtaTitleAlign: "center",
-    businessCtaBgColor: "#2563eb",
+    BusinessCtaBgColor: "#2563eb",
     
-    businessCtaText: "Get in touch with our team to learn how we can help you achieve your business goals.",
-    businessCtaTextColor: "#e2e2e2",
+    BusinessCtaText: "Get in touch with our team to learn how we can help you achieve your business goals.",
+    BsinessCtaTextColor: "#e2e2e2",
     businessCtaTextSize: "1.25rem",
     
     businessCtaButtonText: "Contact Us Today",

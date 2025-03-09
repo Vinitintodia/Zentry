@@ -4,7 +4,7 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
+  House,
   LogOut,
   Sparkles,
 } from "lucide-react"
@@ -93,8 +93,8 @@ export function NavUser({
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard />
-                Billing
+                <House/>
+                 <a href="/">Home</a>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -104,7 +104,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              Log out
+              <a  href="/home">Log out </a>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
