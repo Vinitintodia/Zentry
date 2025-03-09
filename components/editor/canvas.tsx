@@ -23,9 +23,9 @@ export function CanvasArea() {
   }
   
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="flex-1 overflow-auto editor-canvas p-4">
       <div 
-        className="min-h-full p-8"
+        className="min-h-full p-8 editor-canvas-content"
         style={{ 
           transform: `scale(${zoom / 100})`,
           transformOrigin: 'center top'

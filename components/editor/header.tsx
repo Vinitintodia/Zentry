@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 import { useEditor } from "@/contexts/editor-context"
 import { useUser } from "@clerk/nextjs"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface HeaderProps {
   title: string;
@@ -28,7 +29,8 @@ export function EditorHeader({ title }: HeaderProps) {
   }
   
   return (
-    <div className="flex h-14 items-center justify-between border-b px-4">
+    <header className="editor-header  h-14 items-center justify-between border-b px-6">
+      <div className="flex h-14 items-center justify-between border-b px-4">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard")}>
           <ArrowLeft className="h-4 w-4" />
@@ -51,7 +53,8 @@ export function EditorHeader({ title }: HeaderProps) {
         </Button>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
+      <ThemeToggle />
         <Avatar className="h-8 w-8">
           <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
           <AvatarFallback>{getInitials()}</AvatarFallback>
@@ -62,5 +65,7 @@ export function EditorHeader({ title }: HeaderProps) {
         </div>
       </div>
     </div>
+      
+    </header>
   )
 } 

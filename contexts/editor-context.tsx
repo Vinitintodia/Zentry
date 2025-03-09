@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState } from "react"
 
-type EditorContextType = {
+export type EditorContextType = {
   templateId: string;
   zoom: number;
   setZoom: (zoom: number) => void;

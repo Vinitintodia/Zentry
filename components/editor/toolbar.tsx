@@ -8,10 +8,11 @@ import { useEditor } from "@/contexts/editor-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export function EditorToolbar() {
+  const { zoom, setZoom } = useEditor()
   const { activeTab, setActiveTab, viewMode, setViewMode } = useEditor()
-  
+
   return (
-    <div className="flex h-12 items-center justify-between border-b px-4">
+    <div className="editor-toolbar flex h-12 items-center justify-between border-b px-6">
       {/* Left side controls */}
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -26,46 +27,34 @@ export function EditorToolbar() {
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <Palette className="h-4 w-4" />
         </Button>
-      </div>
-      
-      <Separator orientation="vertical" className="h-6 mx-2" />
-      
-      {/* Right side controls */}
-      <div className="flex items-center gap-2">
-        {/* Add ThemeToggle button here, before the preview button */}
-        <ThemeToggle />
-        
-        {/* Existing preview button */}
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="gap-1.5"
-          onClick={() => setViewMode(viewMode === "design" ? "preview" : "design")}
-        >
-          {viewMode === "design" ? (
-            <>
-              <Eye className="h-4 w-4" />
-              Preview
-            </>
-          ) : (
-            <>
-              <Pencil className="h-4 w-4" />
-              Edit
-            </>
-          )}
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Undo className="h-4 w-4" />
         </Button>
-        
-        <Separator orientation="vertical" className="h-6 mx-2" />
-        
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Undo className="h-4 w-4" />
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Redo className="h-4 w-4" />
+        </Button>
+        <div>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom(Math.max(25, zoom - 25))} >
+            <Minus className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Redo className="h-4 w-4" />
+          <span className="text-xs w-9 text-center">{zoom}%</span>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom(Math.min(200, zoom + 25))} >
+            <Plus className="h-4 w-4" />
           </Button>
         </div>
       </div>
+      
+      
     </div>
+
+
+
+
+
+
+
   )
 }
+
+
+
