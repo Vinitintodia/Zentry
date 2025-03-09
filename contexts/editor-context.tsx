@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState } from "react"
 
+export type DeviceType = "desktop" | "tablet" | "mobile";
+
 export type EditorContextType = {
   templateId: string;
   zoom: number;
@@ -12,8 +14,10 @@ export type EditorContextType = {
   setActiveElement: (element: string | null) => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  viewMode: string;
-  setViewMode: (mode: string) => void;
+  viewMode: "design" | "preview";
+  setViewMode: (mode: "design" | "preview") => void;
+  deviceView: DeviceType;
+  setDeviceView: (device: DeviceType) => void;
   properties: Record<string, any>;
   updateProperty: (property: string, value: any) => void;
   showExportCode: boolean;
@@ -29,7 +33,8 @@ export function EditorProvider({ children, initialTemplateId }: { children: Reac
   const [activeElement, setActiveElement] = useState<string | null>("businessHeroTitle")
   const [showExportCode, setShowExportCode] = useState(false)
   const [activeTab, setActiveTab] = useState("design")
-  const [viewMode, setViewMode] = useState("design")
+  const [viewMode, setViewMode] = useState<"design" | "preview">("design")
+  const [deviceView, setDeviceView] = useState<DeviceType>("desktop")
   
   // Business website properties with all sections
   const [properties, setProperties] = useState({
@@ -145,6 +150,8 @@ export function EditorProvider({ children, initialTemplateId }: { children: Reac
         setActiveTab,
         viewMode,
         setViewMode,
+        deviceView,
+        setDeviceView,
         properties,
         updateProperty,
         showExportCode,

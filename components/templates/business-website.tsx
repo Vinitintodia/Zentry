@@ -30,12 +30,16 @@ export function BusinessWebsiteTemplate({ properties, setActiveElement }: Templa
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <BusinessNavbar {...navbarProps} />
-      <BusinessHero {...heroProps} />
-      <BusinessFeatures {...featuresProps} />
-      <BusinessAppDemo {...demoProps} />
-      <BusinessDownload {...downloadProps} onDownload={handleDownload} />
+    <div className="relative flex flex-col min-h-screen">
+      <div className="sticky top-0 left-0 right-0 z-50">
+        <BusinessNavbar {...navbarProps} />
+      </div>
+      <main>
+        <BusinessHero {...heroProps} />
+        <BusinessFeatures {...featuresProps} />
+        <BusinessAppDemo {...demoProps} />
+        <BusinessDownload {...downloadProps} onDownload={handleDownload} />
+      </main>
       <BusinessFooter {...footerProps} />
     </div>
   );

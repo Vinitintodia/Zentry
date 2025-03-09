@@ -4,6 +4,8 @@ import { Calculator, BarChart3 } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { AnimatedText } from "@/components/ui/animated-text";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import { useEditor } from "@/contexts/editor-context";
 
 interface VoiceCommand {
   command: string;
@@ -15,7 +17,6 @@ interface BusinessAppDemoProps {
   subtitle?: string;
   tagline?: string;
   voiceCommands?: VoiceCommand[];
-  theme?: string;
 }
 
 export function BusinessAppDemo({
@@ -27,11 +28,14 @@ export function BusinessAppDemo({
     { command: "What is 15% of 200?", result: "30" },
     { command: "Calculate square root of 144", result: "12" },
     { command: "Convert 5 dollars to euros", result: "€4.58" }
-  ],
-  theme = "light"
+  ]
 }: BusinessAppDemoProps) {
   const [activeCommand, setActiveCommand] = useState(0);
-  const isDark = theme === 'dark';
+  const { theme } = useTheme();
+  const { deviceView } = useEditor();
+  
+  const isMobileView = deviceView === "mobile";
+  const isTabletView = deviceView === "tablet";
 
   // Change active command every 4 seconds
   useEffect(() => {
@@ -44,96 +48,137 @@ export function BusinessAppDemo({
   
   return (
     <section id="demo" className={cn(
-      "py-20 relative overflow-hidden",
-      isDark ? "bg-gray-800/30" : "bg-brand-gray-light/30"
+      "relative overflow-hidden bg-muted/50",
+      isMobileView ? "py-8" : isTabletView ? "py-12" : "py-16"
     )}>
-      <div className={cn(
-        "absolute top-0 left-0 w-full h-20 bg-gradient-to-b to-transparent",
-        isDark ? "from-gray-900" : "from-white"
-      )}></div>
-      <div className={cn(
-        "absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t to-transparent",
-        isDark ? "from-gray-900" : "from-white"
-      )}></div>
+      <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-background to-transparent"></div>
+      <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-background to-transparent"></div>
       
-      <div className="container px-4 md:px-6 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-block mb-4">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className={cn(
+          "text-center mx-auto",
+          isMobileView ? "max-w-[90%] mb-6" : isTabletView ? "max-w-2xl mb-8" : "max-w-3xl mb-12"
+        )}>
+          <div className="inline-block mb-3">
             <span className={cn(
-              "inline-flex items-center rounded-full px-3 py-1 text-sm font-medium",
-              isDark 
-                ? "border border-brand-blue/30 bg-brand-blue/20 text-brand-blue-light" 
-                : "border border-brand-blue/20 bg-brand-blue/10 text-brand-blue"
+              "inline-flex items-center rounded-full font-medium border border-primary/20 bg-primary/10 text-primary",
+              isMobileView ? "px-2.5 py-1 text-xs" : "px-3 py-1 text-sm"
             )}>
               {tagline}
             </span>
           </div>
           
-          <AnimatedText
-            text={title}
-            element="h2"
-            animation="fade-in-up"
-            className="text-3xl md:text-4xl font-bold tracking-tight text-balance mb-4"
-            theme={theme}
-          />
+          <h2 className={cn(
+            "font-bold tracking-tight text-balance mb-3 text-foreground animate-fade-in-up",
+            isMobileView ? "text-2xl" : isTabletView ? "text-3xl" : "text-4xl"
+          )}>
+            {title}
+          </h2>
           
-          <AnimatedText
-            text={subtitle}
-            element="p"
-            animation="fade-in-up"
-            delay={100}
-            className={cn(
-              "text-lg",
-              isDark ? "text-gray-400" : "text-muted-foreground"
-            )}
-            theme={theme}
-          />
+          <p className={cn(
+            "text-balance text-muted-foreground animate-fade-in-up",
+            isMobileView ? "text-base" : "text-lg"
+          )} style={{ animationDelay: '100ms' }}>
+            {subtitle}
+          </p>
         </div>
         
-        <div className="max-w-4xl mx-auto">
-          <Tabs defaultValue="basic" className="w-full">
-            <div className="flex justify-center mb-8">
-              <TabsList className={cn(
-                "grid w-full max-w-md grid-cols-3",
-                isDark ? "bg-gray-800" : ""
-              )}>
-                <TabsTrigger 
-                  value="basic" 
-                  className={cn(
-                    "flex items-center gap-2",
-                    isDark ? "data-[state=active]:bg-gray-700 text-gray-300 data-[state=active]:text-white" : ""
-                  )}
-                >
-                  <Calculator className="h-4 w-4" />
-                  <span>Basic</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="scientific"
-                  className={cn(
-                    "flex items-center gap-2",
-                    isDark ? "data-[state=active]:bg-gray-700 text-gray-300 data-[state=active]:text-white" : ""
-                  )}
-                >
-                  <Calculator className="h-4 w-4" />
-                  <span>Scientific</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="financial"
-                  className={cn(
-                    "flex items-center gap-2",
-                    isDark ? "data-[state=active]:bg-gray-700 text-gray-300 data-[state=active]:text-white" : ""
-                  )}
-                >
-                  <BarChart3 className="h-4 w-4" />
-                  <span>Financial</span>
-                </TabsTrigger>
-              </TabsList>
-            </div>
-            
-            {/* Continue with the TabsContent sections with dark mode support */}
-            {/* ... */}
-          </Tabs>
-        </div>
+        <Tabs defaultValue="basic" className="w-full">
+          <div className={cn(
+            "flex justify-center",
+            isMobileView ? "mb-4" : isTabletView ? "mb-6" : "mb-8"
+          )}>
+            <TabsList className={cn(
+              "grid w-full grid-cols-3 gap-1",
+              isMobileView ? "max-w-[280px]" : isTabletView ? "max-w-md" : "max-w-lg"
+            )}>
+              <TabsTrigger 
+                value="basic" 
+                className={cn(
+                  "flex items-center gap-1",
+                  isMobileView ? "px-2 py-1" : "px-4 py-2"
+                )}
+              >
+                <Calculator className={cn(
+                  isMobileView ? "h-3 w-3" : "h-4 w-4"
+                )} />
+                <span className={cn(
+                  isMobileView ? "text-xs" : "text-sm"
+                )}>Basic</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="scientific"
+                className={cn(
+                  "flex items-center gap-1",
+                  isMobileView ? "px-2 py-1" : "px-4 py-2"
+                )}
+              >
+                <Calculator className={cn(
+                  isMobileView ? "h-3 w-3" : "h-4 w-4"
+                )} />
+                <span className={cn(
+                  isMobileView ? "text-xs" : "text-sm"
+                )}>Scientific</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="financial"
+                className={cn(
+                  "flex items-center gap-1",
+                  isMobileView ? "px-2 py-1" : "px-4 py-2"
+                )}
+              >
+                <BarChart3 className={cn(
+                  isMobileView ? "h-3 w-3" : "h-4 w-4"
+                )} />
+                <span className={cn(
+                  isMobileView ? "text-xs" : "text-sm"
+                )}>Financial</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="basic">
+            <GlassCard intensity="medium" className={cn(
+              isMobileView ? "p-2" : isTabletView ? "p-4" : "p-6"
+            )}>
+              <div className="aspect-video rounded-lg bg-card overflow-hidden">
+                <img 
+                  src="/a1.webp" 
+                  alt="Calculator" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </GlassCard>
+          </TabsContent>
+          
+          <TabsContent value="scientific">
+            <GlassCard intensity="medium" className={cn(
+              isMobileView ? "p-2" : isTabletView ? "p-4" : "p-6"
+            )}>
+              <div className="aspect-video rounded-lg bg-card overflow-hidden">
+                <img 
+                  src="/a2.webp" 
+                  alt="Calculator" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </GlassCard>
+          </TabsContent>
+          
+          <TabsContent value="financial">
+            <GlassCard intensity="medium" className={cn(
+              isMobileView ? "p-2" : isTabletView ? "p-4" : "p-6"
+            )}>
+              <div className="aspect-video rounded-lg bg-card overflow-hidden">
+                <img 
+                  src="/a3.webp" 
+                  alt="Calculator" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </GlassCard>
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );

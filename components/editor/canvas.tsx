@@ -5,9 +5,10 @@ import { ModernLandingTemplate } from "@/components/templates/modern-landing"
 import { CreativePortfolioTemplate } from "@/components/templates/creative-portfolio"
 import { BusinessWebsiteTemplate } from "@/components/templates/business-website"
 import { useEditor } from "@/contexts/editor-context"
+import { cn } from "@/lib/utils"
 
 export function CanvasArea() {
-  const { templateId, zoom, properties, setActiveElement } = useEditor()
+  const { templateId, zoom, properties, setActiveElement, viewMode, deviceView } = useEditor()
   
   // Render the appropriate template
   const renderTemplate = () => {
@@ -23,12 +24,18 @@ export function CanvasArea() {
   }
   
   return (
-    <div className="flex-1 overflow-auto editor-canvas p-4">
+    <div className={cn(
+      "editor-canvas w-full h-full",
+      viewMode === "preview" ? "preview-mode" : "p-4"
+    )}>
       <div 
-        className="min-h-full p-8 editor-canvas-content"
+        className={cn(
+          "h-full",
+          viewMode === "preview" ? "" : "editor-canvas-content"
+        )}
         style={{ 
-          transform: `scale(${zoom / 100})`,
-          transformOrigin: 'center top'
+          transform: viewMode === "preview" ? undefined : `scale(${zoom / 100})`,
+          transformOrigin: 'center top',
         }}
       >
         {renderTemplate()}
