@@ -5,13 +5,16 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEditor } from "@/contexts/editor-context";
 
+interface NavItem {
+  label: string;
+  href: string;
+}
+
 interface BusinessNavbarProps {
   logoText?: string;
   logoInitials?: string;
-  navItems?: Array<{
-    label: string;
-    href: string;
-  }>;
+  navItems?: NavItem[];
+  setActiveElement?: (element: string) => void;
 }
 
 export function BusinessNavbar({ 
@@ -22,16 +25,38 @@ export function BusinessNavbar({
     { label: "Demo", href: "#demo" },
     { label: "Download", href: "#download" },
     { label: "About", href: "#about" }
-  ]
+  ],
+  setActiveElement
 }: BusinessNavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { deviceView } = useEditor();
+  const { deviceView, properties } = useEditor();
   
   const isMobileView = deviceView === "mobile";
   
+  // Get navbar properties with defaults
+  const {
+    navbarBgColor = "transparent",
+    navbarTextColor = "inherit",
+    navbarSticky = true,
+    navbarFontSize = "0.875rem",
+    navbarFontWeight = "500",
+    navbarFontFamily = "inherit",
+    navbarButtonVariant = "default",
+    navbarButtonRadius = "0.5rem",
+    navbarButtonBgColor = "var(--primary)",
+    navbarButtonTextColor = "var(--primary-foreground)",
+    navbarLogoSize = "1.125rem",
+    navbarLogoWeight = "600",
+    navbarLogoColor = "inherit",
+    navbarLogoBgColor = "var(--primary)",
+    navbarLogoRadius = "0.5rem",
+  } = properties;
+  
   useEffect(() => {
+    if (!navbarSticky) return;
+    
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
       if (isScrolled !== scrolled) {
@@ -41,7 +66,7 @@ export function BusinessNavbar({
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrolled]);
+  }, [scrolled, navbarSticky]);
   
   const scrollToSection = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
@@ -56,21 +81,50 @@ export function BusinessNavbar({
     <header 
       className={cn(
         "top-0 left-0 right-0 z-50 transition-all duration-300",
+        navbarSticky ? "sticky" : "relative",
         scrolled || mobileMenuOpen
           ? "bg-background/80 backdrop-blur-md border-b"
-          : "bg-transparent"
+          : ""
       )}
+      style={{ 
+        backgroundColor: navbarBgColor === 'transparent' ? 'transparent' : navbarBgColor,
+        color: navbarTextColor,
+        fontFamily: navbarFontFamily,
+        position: navbarSticky ? 'sticky' : 'relative'
+      }}
+      onClick={() => setActiveElement?.("businessNavbar")}
     >
       <div className="px-4 sm:px-6 md:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
+          <div 
+            className="flex items-center gap-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveElement?.("businessNavbarLogo");
+            }}
+          >
+            <div 
+              className="flex items-center justify-center text-primary-foreground font-bold"
+              style={{
+                width: navbarLogoSize,
+                height: navbarLogoSize,
+                backgroundColor: navbarLogoBgColor,
+                borderRadius: navbarLogoRadius,
+                color: navbarLogoColor,
+                fontWeight: navbarLogoWeight
+              }}
+            >
               {logoInitials}
             </div>
             <span className={cn(
-              "font-medium text-lg text-foreground",
+              "font-medium",
               isMobileView ? "hidden" : "block"
-            )}>
+            )}
+            style={{
+              fontSize: navbarLogoSize,
+              fontWeight: navbarLogoWeight,
+              color: navbarLogoColor
+            }}>
               {logoText}
             </span>
           </div>
@@ -83,11 +137,14 @@ export function BusinessNavbar({
               <a 
                 key={index} 
                 href={item.href} 
-                className={cn(
-                  "text-sm font-medium transition-colors",
-                  "text-muted-foreground hover:text-foreground"
-                )}
+                className="transition-colors hover:text-foreground"
                 onClick={(e) => scrollToSection(e, item.href)}
+                style={{
+                  fontSize: navbarFontSize,
+                  fontWeight: navbarFontWeight,
+                  color: navbarTextColor === 'inherit' ? 'inherit' : navbarTextColor,
+                  fontFamily: navbarFontFamily
+                }}
               >
                 {item.label}
               </a>
@@ -110,19 +167,42 @@ export function BusinessNavbar({
               variant="ghost" 
               size="sm" 
               className={cn(isMobileView ? "hidden" : "flex")}
+              style={{
+                fontSize: navbarFontSize,
+                fontWeight: navbarFontWeight,
+                borderRadius: navbarButtonRadius,
+                color: navbarTextColor === 'inherit' ? 'inherit' : navbarTextColor,
+                fontFamily: navbarFontFamily
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveElement?.("businessNavbarSignIn");
+              }}
             >
               Sign In
             </Button>
             
             <Button 
+              variant={navbarButtonVariant}
               size="sm" 
               className={cn(
-                "bg-primary text-primary-foreground hover:bg-primary/90",
                 isMobileView ? "hidden" : "flex"
               )}
-              onClick={(e) => scrollToSection(e, "#download")}
+              style={{
+                backgroundColor: navbarButtonBgColor,
+                color: navbarButtonTextColor,
+                fontSize: navbarFontSize,
+                fontWeight: navbarFontWeight,
+                borderRadius: navbarButtonRadius,
+                fontFamily: navbarFontFamily
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveElement?.("businessNavbarCTA");
+                scrollToSection(e, "#download");
+              }}
             >
-              Download
+              {properties.navbarCTAText || "Download"}
             </Button>
 
             <Button
@@ -151,11 +231,14 @@ export function BusinessNavbar({
               <a 
                 key={index} 
                 href={item.href} 
-                className={cn(
-                  "text-sm font-medium transition-colors py-2 px-2 rounded-lg",
-                  "text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}
+                className="transition-colors py-2 px-2 rounded-lg hover:bg-muted"
                 onClick={(e) => scrollToSection(e, item.href)}
+                style={{
+                  fontSize: navbarFontSize,
+                  fontWeight: navbarFontWeight,
+                  color: navbarTextColor === 'inherit' ? 'inherit' : navbarTextColor,
+                  fontFamily: navbarFontFamily
+                }}
               >
                 {item.label}
               </a>
@@ -165,15 +248,38 @@ export function BusinessNavbar({
               size="sm" 
               variant="outline"
               className="w-full justify-center"
+              style={{
+                fontSize: navbarFontSize,
+                fontWeight: navbarFontWeight,
+                borderRadius: navbarButtonRadius,
+                fontFamily: navbarFontFamily
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveElement?.("businessNavbarMobileSignIn");
+              }}
             >
               Sign In
             </Button>
             <Button 
+              variant={navbarButtonVariant}
               size="sm" 
-              className="w-full justify-center bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={(e) => scrollToSection(e, "#download")}
+              className="w-full justify-center"
+              style={{
+                backgroundColor: navbarButtonBgColor,
+                color: navbarButtonTextColor,
+                fontSize: navbarFontSize,
+                fontWeight: navbarFontWeight,
+                borderRadius: navbarButtonRadius,
+                fontFamily: navbarFontFamily
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveElement?.("businessNavbarMobileCTA");
+                scrollToSection(e, "#download");
+              }}
             >
-              Download
+              {properties.navbarCTAText || "Download"}
             </Button>
           </nav>
         </div>

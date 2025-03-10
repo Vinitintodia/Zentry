@@ -6,9 +6,86 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useEditor } from "@/contexts/editor-context"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { X } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useTheme } from "@/contexts/theme-context"
+
+// Add this near the top of the file, after imports
+interface NavItem {
+  label: string;
+  href: string;
+}
 
 export function PropertiesPanel() {
   const { activeElement, activeTab, setActiveTab, properties, updateProperty } = useEditor()
+  const { updateTheme } = useTheme()
+  
+  // Font options based on the image
+  const fontOptions = [
+    { 
+      name: "System Default", 
+      value: "var(--font-system)",
+      previewClass: "font-system" 
+    },
+    { 
+      name: "Syne & Inter", 
+      value: "var(--font-syne)",
+      previewClass: "font-syne"
+    },
+    { 
+      name: "Roboto", 
+      value: "var(--font-roboto)",
+      previewClass: "font-roboto"
+    },
+    { 
+      name: "Montserrat", 
+      value: "var(--font-montserrat)",
+      previewClass: "font-montserrat"
+    }
+  ]
+
+  // Theme color palettes based on the image
+  const themeOptions = [
+    {
+      name: "Hot Indigo",
+      colors: [
+        ["#4ADE80", "#22C55E", "#16A34A"],
+        ["#818CF8", "#6366F1", "#4F46E5"],
+        ["#FB7185", "#E11D48", "#BE123C"]
+      ]
+    },
+    {
+      name: "Cool Gray",
+      colors: [
+        ["#F87171", "#DC2626", "#991B1B"],
+        ["#60A5FA", "#2563EB", "#1D4ED8"],
+        ["#D1D5DB", "#9CA3AF", "#6B7280"]
+      ]
+    },
+    {
+      name: "Warm Earth",
+      colors: [
+        ["#FCD34D", "#F59E0B", "#D97706"],
+        ["#F472B6", "#EC4899", "#DB2777"],
+        ["#A8A29E", "#78716C", "#57534E"]
+      ]
+    }
+  ]
+
+  const handleFontChange = (font: string) => {
+    // Update the CSS variable
+    document.documentElement.style.setProperty('--font-primary', font);
+    
+    // Update the theme context and properties
+    updateTheme(font, properties.colors || []);
+    updateProperty("fontFamily", font);
+  }
+
+  const handleColorChange = (colors: string[]) => {
+    updateTheme(properties.fontFamily || "inherit", colors)
+    updateProperty("colors", colors)
+  }
   
   // Render color picker control
   const renderColorPicker = (property: string, label: string, value: string) => (
@@ -205,6 +282,236 @@ export function PropertiesPanel() {
           </div>
         );
         
+      case "businessNavbar":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium">Position</label>
+              <div className="flex gap-2">
+                <Button 
+                  variant={properties.navbarSticky ? "default" : "outline"} 
+                  size="sm"
+                  onClick={() => {
+                    updateProperty("navbarSticky", true);
+                    document.querySelector('header')?.classList.add('sticky');
+                  }}
+                  className="flex-1"
+                >
+                  Sticky
+                </Button>
+                <Button 
+                  variant={!properties.navbarSticky ? "default" : "outline"} 
+                  size="sm"
+                  onClick={() => {
+                    updateProperty("navbarSticky", false);
+                    document.querySelector('header')?.classList.remove('sticky');
+                  }}
+                  className="flex-1"
+                >
+                  Static
+                </Button>
+              </div>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Background Color</label>
+              <div className="flex items-center gap-3">
+                <div className="relative h-8 w-8 overflow-hidden rounded-md border border-input">
+                  <div 
+                    className="absolute inset-0" 
+                    style={{backgroundColor: properties.navbarBgColor || 'transparent'}}
+                  />
+                  <input 
+                    type="color" 
+                    value={properties.navbarBgColor || '#ffffff'}
+                    onChange={(e) => updateProperty("navbarBgColor", e.target.value)}
+                    className="absolute inset-0 opacity-0"
+                  />
+                </div>
+                <div className="text-sm">{properties.navbarBgColor || 'transparent'}</div>
+              </div>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Text Color</label>
+              <Select
+                value={properties.navbarTextColor || "inherit"}
+                onValueChange={(value) => updateProperty("navbarTextColor", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select color" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="inherit">Inherit</SelectItem>
+                  <SelectItem value="var(--foreground)">Default</SelectItem>
+                  <SelectItem value="var(--muted-foreground)">Muted</SelectItem>
+                  <SelectItem value="var(--primary)">Primary</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Font Size</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  value={parseFloat(properties.navbarFontSize?.replace('rem', '') || '0.875')}
+                  onChange={(e) => updateProperty("navbarFontSize", `${e.target.value}rem`)}
+                  className="w-20"
+                  step="0.125"
+                />
+                <span>rem</span>
+              </div>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Font Family</label>
+              <Select
+                value={properties.navbarFontFamily || "inherit"}
+                onValueChange={(value) => updateProperty("navbarFontFamily", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select font" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="inherit">System Default</SelectItem>
+                  <SelectItem value="var(--font-sans)">Sans Serif</SelectItem>
+                  <SelectItem value="var(--font-mono)">Monospace</SelectItem>
+                  <SelectItem value="var(--font-serif)">Serif</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Font Weight</label>
+              <Select
+                value={properties.navbarFontWeight || "500"}
+                onValueChange={(value) => updateProperty("navbarFontWeight", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select weight" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="400">Regular</SelectItem>
+                  <SelectItem value="500">Medium</SelectItem>
+                  <SelectItem value="600">Semibold</SelectItem>
+                  <SelectItem value="700">Bold</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+        
+      case "businessNavbarLogo":
+        return (
+          <div className="space-y-4">
+            {renderTextInput("logoText", "Logo Text", properties.logoText || "VoiceCalc")}
+            {renderTextInput("logoInitials", "Logo Initials", properties.logoInitials || "VC")}
+            {renderColorPicker("navbarLogoBgColor", "Logo Background", properties.navbarLogoBgColor || "var(--primary)")}
+            {renderColorPicker("navbarLogoColor", "Logo Color", properties.navbarLogoColor || "inherit")}
+            {renderSizeInput("navbarLogoSize", "Logo Size", properties.navbarLogoSize || "1.125rem")}
+            {renderSizeInput("navbarLogoRadius", "Logo Radius", properties.navbarLogoRadius || "0.5rem")}
+          </div>
+        );
+        
+      case "businessNavbarCTA":
+      case "businessNavbarMobileCTA":
+        return (
+          <div className="space-y-4">
+            {renderTextInput("navbarCTAText", "Button Text", properties.navbarCTAText || "Download")}
+            {renderColorPicker("navbarButtonBgColor", "Button Background", properties.navbarButtonBgColor || "var(--primary)")}
+            {renderColorPicker("navbarButtonTextColor", "Button Text Color", properties.navbarButtonTextColor || "var(--primary-foreground)")}
+            <div>
+              <label className="mb-2 block text-sm font-medium">Border Radius</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  value={parseFloat(properties.navbarButtonRadius?.replace('rem', '') || '0.5')}
+                  onChange={(e) => updateProperty("navbarButtonRadius", `${e.target.value}rem`)}
+                  className="w-20"
+                  step="0.125"
+                />
+                <span>rem</span>
+              </div>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Button Style</label>
+              <Select
+                value={properties.navbarButtonVariant || "default"}
+                onValueChange={(value) => updateProperty("navbarButtonVariant", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select style" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="secondary">Secondary</SelectItem>
+                  <SelectItem value="outline">Outline</SelectItem>
+                  <SelectItem value="ghost">Ghost</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+        
+      case "businessNavbar":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium">Navigation Items</label>
+              {(properties.navItems || []).map((item: NavItem, index: number) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    value={item.label}
+                    onChange={(e) => {
+                      const newItems = [...(properties.navItems || [])];
+                      newItems[index] = { ...item, label: e.target.value };
+                      updateProperty("navItems", newItems);
+                    }}
+                    placeholder="Label"
+                    className="flex-1"
+                  />
+                  <Select
+                    value={item.href}
+                    onValueChange={(value) => {
+                      const newItems = [...(properties.navItems || [])];
+                      newItems[index] = { ...item, href: value };
+                      updateProperty("navItems", newItems);
+                    }}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select section" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="#features">Features</SelectItem>
+                      <SelectItem value="#demo">Demo</SelectItem>
+                      <SelectItem value="#download">Download</SelectItem>
+                      <SelectItem value="#about">About</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      const newItems = [...(properties.navItems || [])];
+                      newItems.splice(index, 1);
+                      updateProperty("navItems", newItems);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const newItems = [...(properties.navItems || []), { label: "New Item", href: "#features" }];
+                  updateProperty("navItems", newItems);
+                }}
+                className="w-full mt-2"
+              >
+                Add Navigation Item
+              </Button>
+            </div>
+          </div>
+        );
+        
       default:
         return (
           <div className="flex h-40 items-center justify-center text-center text-sm text-muted-foreground">
@@ -295,6 +602,61 @@ export function PropertiesPanel() {
             {renderTextInput("businessEmail", "Email Address", properties.businessEmail || "info@acmeinc.com")}
             {renderTextInput("businessPhone", "Phone Number", properties.businessPhone || "+1 (555) 123-4567")}
             {renderTextInput("businessAddress", "Business Address", properties.businessAddress || "123 Business St, City, State")}
+          </div>
+        );
+        
+      case "businessNavbar":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium">Navigation Items</label>
+              {(properties.navItems || []).map((item: NavItem, index: number) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    value={item.label}
+                    onChange={(e) => {
+                      const newItems = [...(properties.navItems || [])];
+                      newItems[index] = { ...item, label: e.target.value };
+                      updateProperty("navItems", newItems);
+                    }}
+                    placeholder="Label"
+                    className="flex-1"
+                  />
+                  <Input
+                    value={item.href}
+                    onChange={(e) => {
+                      const newItems = [...(properties.navItems || [])];
+                      newItems[index] = { ...item, href: e.target.value };
+                      updateProperty("navItems", newItems);
+                    }}
+                    placeholder="Link (#section)"
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      const newItems = [...(properties.navItems || [])];
+                      newItems.splice(index, 1);
+                      updateProperty("navItems", newItems);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const newItems = [...(properties.navItems || []), { label: "New Item", href: "#" }];
+                  updateProperty("navItems", newItems);
+                }}
+                className="w-full mt-2"
+              >
+                Add Navigation Item
+              </Button>
+            </div>
           </div>
         );
         
@@ -431,34 +793,67 @@ export function PropertiesPanel() {
 
   return (
     <div className="w-72 border-l bg-background">
-      <div className="flex h-12 items-center justify-between border-b px-4 py-2">
-        <Tabs defaultValue="design" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="design">Design</TabsTrigger>
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="styles">Styles</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <div className="flex h-12 items-center border-b px-4">
+        <h2 className="text-sm font-medium">Customize</h2>
       </div>
-      
-      <ScrollArea className="h-[calc(100vh-9rem)]">
+      <ScrollArea className="h-[calc(100vh-3rem)]">
         <div className="p-6">
-          {!activeElement && (
-            <div className="text-sm text-muted-foreground mb-4">
-              Click on a section to edit its properties.
+          {/* Fonts Section */}
+          <div className="mb-8">
+            <h3 className="text-sm font-medium mb-4">Fonts</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {fontOptions.map((font, index) => (
+                <button
+                  key={index}
+                  className={cn(
+                    "flex flex-col items-center justify-center p-4 rounded-lg border bg-card hover:bg-accent transition-colors",
+                    properties.fontFamily === font.value && "border-primary",
+                    font.previewClass
+                  )}
+                  onClick={() => handleFontChange(font.value)}
+                >
+                  <div className="text-2xl mb-2">Aa</div>
+                  <div className="text-xs text-muted-foreground">{font.name}</div>
+                </button>
+              ))}
             </div>
-          )}
-          <Tabs value={activeTab} className="w-full">
-            <TabsContent value="design" className="mt-0">
-              {renderDesignProperties()}
-            </TabsContent>
-            <TabsContent value="content" className="mt-0">
-              {renderContentProperties()}
-            </TabsContent>
-            <TabsContent value="styles" className="mt-0">
-              {renderStyleProperties()}
-            </TabsContent>
-          </Tabs>
+          </div>
+
+          {/* Themes Section */}
+          <div>
+            <h3 className="text-sm font-medium mb-4">Themes</h3>
+            <div className="space-y-3">
+              {themeOptions.map((theme, themeIndex) => (
+                <div key={themeIndex} className="space-y-2">
+                  <div className="text-xs text-muted-foreground">{theme.name}</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {theme.colors.map((colorSet, colorIndex) => (
+                      <button
+                        key={`${themeIndex}-${colorIndex}`}
+                        className={cn(
+                          "h-8 rounded-md overflow-hidden hover:ring-2 ring-offset-2 ring-offset-background transition-all",
+                          JSON.stringify(properties.colors) === JSON.stringify(colorSet) 
+                            ? "ring-2 ring-primary" 
+                            : "hover:ring-primary"
+                        )}
+                        onClick={() => handleColorChange(colorSet)}
+                      >
+                        <div className="flex flex-col h-full">
+                          {colorSet.map((color, i) => (
+                            <div
+                              key={i}
+                              className="flex-1"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </ScrollArea>
     </div>

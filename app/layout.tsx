@@ -2,6 +2,9 @@ import { type Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import { Inter, Syne, Roboto, Montserrat } from "next/font/google"
+import { ThemeProvider } from "@/contexts/theme-context"
+import { cn } from "@/lib/utils"
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -11,6 +14,18 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+})
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const syne = Syne({ subsets: ["latin"], variable: "--font-syne" })
+const roboto = Roboto({ 
+  subsets: ["latin"], 
+  weight: ["400", "500", "700"],
+  variable: "--font-roboto" 
+})
+const montserrat = Montserrat({ 
+  subsets: ["latin"],
+  variable: "--font-montserrat" 
 })
 
 export const metadata: Metadata = {
@@ -25,9 +40,18 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          {children}
+      <html lang="en" suppressHydrationWarning>
+        <head />
+        <body className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          inter.variable,
+          syne.variable,
+          roboto.variable,
+          montserrat.variable
+        )}>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

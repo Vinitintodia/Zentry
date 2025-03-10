@@ -31,16 +31,20 @@ export function BusinessWebsiteTemplate({ properties, setActiveElement }: Templa
 
   return (
     <div className="relative flex flex-col min-h-screen">
-      <div className="sticky top-0 left-0 right-0 z-50">
-        <BusinessNavbar {...navbarProps} />
-      </div>
+      <BusinessNavbar 
+        {...navbarProps} 
+        setActiveElement={setActiveElement}
+        logoText={properties.logoText}
+        logoInitials={properties.logoInitials}
+        navItems={properties.navItems}
+      />
       <main>
-        <BusinessHero {...heroProps} />
-        <BusinessFeatures {...featuresProps} />
-        <BusinessAppDemo {...demoProps} />
-        <BusinessDownload {...downloadProps} onDownload={handleDownload} />
+        <BusinessHero {...heroProps} setActiveElement={setActiveElement} />
+        <BusinessFeatures {...featuresProps} setActiveElement={setActiveElement} />
+        <BusinessAppDemo {...demoProps} setActiveElement={setActiveElement} />
+        <BusinessDownload {...downloadProps} onDownload={handleDownload} setActiveElement={setActiveElement} />
       </main>
-      <BusinessFooter {...footerProps} />
+      <BusinessFooter {...footerProps} setActiveElement={setActiveElement} />
     </div>
   );
 }
