@@ -11,7 +11,7 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  font: "var(--font-system)",
+  font: "var(--template-font-system)",
   setFont: () => {},
   colors: [],
   setColors: () => {},
@@ -19,27 +19,27 @@ const ThemeContext = createContext<ThemeContextType>({
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [font, setFont] = useState("var(--font-system)")
+  const [font, setFont] = useState("var(--template-font-system)")
   const [colors, setColors] = useState<string[]>([])
 
   // Add useEffect to initialize font
   useEffect(() => {
     // Set initial font CSS variable
-    document.documentElement.style.setProperty('--font-primary', font);
+    document.documentElement.style.setProperty('--template-font-primary', font);
   }, [])
 
   const updateTheme = (newFont: string, newColors: string[]) => {
     setFont(newFont)
     setColors(newColors)
     
-    // Update CSS variables
-    document.documentElement.style.setProperty("--font-primary", newFont)
+    // Update CSS variables for templates only
+    document.documentElement.style.setProperty("--template-font-primary", newFont)
     
-    // Update theme colors
+    // Update template theme colors
     if (newColors.length >= 3) {
-      document.documentElement.style.setProperty("--primary", newColors[0])
-      document.documentElement.style.setProperty("--primary-hover", newColors[1])
-      document.documentElement.style.setProperty("--primary-active", newColors[2])
+      document.documentElement.style.setProperty("--template-primary", newColors[0])
+      document.documentElement.style.setProperty("--template-primary-hover", newColors[1])
+      document.documentElement.style.setProperty("--template-primary-active", newColors[2])
     }
   }
 

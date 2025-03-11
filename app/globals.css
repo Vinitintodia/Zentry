@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300..700&display=swap');
 
 @import "tailwindcss";
 
@@ -104,10 +107,18 @@
   --canvas-bg: oklch(0.97 0 0);
 
   /* Font variables */
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
   --font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --font-syne: var(--font-syne), var(--font-inter), var(--font-system);
-  --font-roboto: var(--font-roboto), var(--font-system);
-  --font-montserrat: var(--font-montserrat), var(--font-system);
+  --font-syne: 'Syne', var(--font-system);
+  --font-roboto: 'Roboto', var(--font-system);
+  --font-montserrat: 'Montserrat', var(--font-system);
+
+  /* Template font variables */
+  --template-font-primary: var(--font-space-grotesk);
+  --template-font-system: var(--font-system);
+  --template-font-syne: var(--font-syne);
+  --template-font-roboto: var(--font-roboto);
+  --template-font-montserrat: var(--font-montserrat);
 }
 
 .dark {
@@ -175,11 +186,20 @@
     --ring: 142 76% 36%;
     --radius: 0.5rem;
 
-    /* Font variables */
-    --font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    --font-syne: var(--font-syne), var(--font-inter), var(--font-system);
-    --font-roboto: var(--font-roboto), var(--font-system);
-    --font-montserrat: var(--font-montserrat), var(--font-system);
+    /* Template-specific variables */
+    --template-font-primary: var(--font-space-grotesk);
+    --template-background: 0 0% 100%;
+    --template-foreground: 240 10% 3.9%;
+    --template-primary: 142 76% 36%;
+    --template-primary-hover: 142 76% 32%;
+    --template-primary-active: 142 76% 28%;
+    --template-primary-foreground: 355.7 100% 97.3%;
+    --template-secondary: 240 4.8% 95.9%;
+    --template-secondary-foreground: 240 5.9% 10%;
+    --template-muted: 240 4.8% 95.9%;
+    --template-muted-foreground: 240 3.8% 46.1%;
+    --template-accent: 240 4.8% 95.9%;
+    --template-accent-foreground: 240 5.9% 10%;
   }
 
   .dark {
@@ -206,13 +226,29 @@
     --ring: 142 76% 36%;
   }
 
+  /* Template dark mode variables */
+  .template-dark {
+    --template-background: 20 14.3% 4.1%;
+    --template-foreground: 0 0% 95%;
+    --template-primary: 142 76% 36%;
+    --template-primary-hover: 142 76% 32%;
+    --template-primary-active: 142 76% 28%;
+    --template-primary-foreground: 355.7 100% 97.3%;
+    --template-secondary: 240 3.7% 15.9%;
+    --template-secondary-foreground: 0 0% 98%;
+    --template-muted: 0 0% 15%;
+    --template-muted-foreground: 240 5% 64.9%;
+    --template-accent: 12 6.5% 15.1%;
+    --template-accent-foreground: 0 0% 98%;
+  }
+
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-    font-family: var(--font-primary, var(--font-system));
+    font-family: var(--font-space-grotesk);
   }
 }
 
@@ -263,4 +299,33 @@ body {
 
 .font-montserrat {
   font-family: var(--font-montserrat);
+}
+
+/* Template font classes */
+.template-font-system {
+  font-family: var(--template-font-system);
+}
+
+.template-font-syne {
+  font-family: var(--template-font-syne);
+}
+
+.template-font-roboto {
+  font-family: var(--template-font-roboto);
+}
+
+.template-font-montserrat {
+  font-family: var(--template-font-montserrat);
+}
+
+/* Template container class */
+.template-container {
+  font-family: var(--template-font-primary);
+  color: hsl(var(--template-foreground));
+  background-color: hsl(var(--template-background));
+}
+
+/* Override font when selected */
+[style*="--template-font-primary"] {
+  font-family: var(--template-font-primary) !important;
 }

@@ -25,23 +25,23 @@ export function PropertiesPanel() {
   const fontOptions = [
     { 
       name: "System Default", 
-      value: "var(--font-system)",
-      previewClass: "font-system" 
+      value: "var(--template-font-system)",
+      previewClass: "template-font-system" 
     },
     { 
       name: "Syne & Inter", 
-      value: "var(--font-syne)",
-      previewClass: "font-syne"
+      value: "var(--template-font-syne)",
+      previewClass: "template-font-syne"
     },
     { 
       name: "Roboto", 
-      value: "var(--font-roboto)",
-      previewClass: "font-roboto"
+      value: "var(--template-font-roboto)",
+      previewClass: "template-font-roboto"
     },
     { 
       name: "Montserrat", 
-      value: "var(--font-montserrat)",
-      previewClass: "font-montserrat"
+      value: "var(--template-font-montserrat)",
+      previewClass: "template-font-montserrat"
     }
   ]
 
@@ -74,8 +74,8 @@ export function PropertiesPanel() {
   ]
 
   const handleFontChange = (font: string) => {
-    // Update the CSS variable
-    document.documentElement.style.setProperty('--font-primary', font);
+    // Update the CSS variable for templates only
+    document.documentElement.style.setProperty('--template-font-primary', font);
     
     // Update the theme context and properties
     updateTheme(font, properties.colors || []);
@@ -83,8 +83,9 @@ export function PropertiesPanel() {
   }
 
   const handleColorChange = (colors: string[]) => {
-    updateTheme(properties.fontFamily || "inherit", colors)
-    updateProperty("colors", colors)
+    // Update theme context and properties
+    updateTheme(properties.fontFamily || "var(--template-font-system)", colors);
+    updateProperty("colors", colors);
   }
   
   // Render color picker control
@@ -522,150 +523,172 @@ export function PropertiesPanel() {
   }
   
   // ----------------------- CONTENT TAB -----------------------
-  // Content properties should include text and media content
+  // Content properties should include text and content settings
   const renderContentProperties = () => {
     switch (activeElement) {
-      case "businessName":
-        return renderTextInput("businessName", "Business Name", properties.businessName);
-        
+      // Hero Section
+      case "businessHeroTagline":
+        return renderTextInput("businessHeroTagline", "Tagline", properties.businessHeroTagline || "Introducing VoiceCalc for macOS");
+      
       case "businessHeroTitle":
-        return renderTextArea("businessHeroTitle", "Headline", properties.businessHeroTitle, 4);
-        
+        return renderTextArea("businessHeroTitle", "Title", properties.businessHeroTitle || "The Smart Calculator That Listens and Adapts", 4);
+      
       case "businessHeroSubtitle":
-        return renderTextArea("businessHeroSubtitle", "Subtitle", properties.businessHeroSubtitle, 4);
-        
-      case "businessCtaButton":
-        return renderTextInput("businessCtaText", "Button Text", properties.businessCtaText);
-        
-      case "businessAboutTitle":
-        return renderTextInput("businessAboutTitle", "Section Title", properties.businessAboutTitle);
-        
-      case "businessAboutText":
-        return renderTextArea("businessAboutText", "Section Content", properties.businessAboutText, 5);
-        
-      case "businessAboutStat1":
-        return renderTextInput("businessAboutStat1", "Statistic 1", properties.businessAboutStat1 || "10+ Years Experience");
-        
-      case "businessAboutStat2":
-        return renderTextInput("businessAboutStat2", "Statistic 2", properties.businessAboutStat2 || "100+ Successful Projects");
-        
-      case "businessAboutStat3":
-        return renderTextInput("businessAboutStat3", "Statistic 3", properties.businessAboutStat3 || "24/7 Customer Support");
-        
-      case "businessServiceTitle":
-        return renderTextInput("businessServiceTitle", "Section Title", properties.businessServiceTitle);
-        
-      case "businessService1":
+        return renderTextArea("businessHeroSubtitle", "Subtitle", properties.businessHeroSubtitle || "Perform calculations effortlessly with voice commands. The intelligent interface appears when you need it and elegantly fades away when you don't.", 4);
+      
+      case "businessHeroPrimaryButton":
+        return renderTextInput("businessHeroPrimaryButtonText", "Button Text", properties.businessHeroPrimaryButtonText || "Download Beta");
+      
+      case "businessHeroSecondaryButton":
+        return renderTextInput("businessHeroSecondaryButtonText", "Button Text", properties.businessHeroSecondaryButtonText || "Watch Demo");
+
+      // Features Section
+      case "businessFeaturesTagline":
+        return renderTextInput("businessFeaturesTagline", "Tagline", properties.businessFeaturesTagline || "Features");
+      
+      case "businessFeaturesTitle":
+        return renderTextArea("businessFeaturesTitle", "Title", properties.businessFeaturesTitle || "Smart Functionality Designed for Effortless Use", 4);
+      
+      case "businessFeaturesSubtitle":
+        return renderTextArea("businessFeaturesSubtitle", "Subtitle", properties.businessFeaturesSubtitle || "Every feature is thoughtfully designed to help you perform calculations with minimal effort and maximum efficiency.", 4);
+      
+      case "businessFeature0":
+      case "businessFeature1":
+      case "businessFeature2":
+      case "businessFeature3":
+      case "businessFeature4":
+      case "businessFeature5":
+        const featureIndex = parseInt(activeElement.replace("businessFeature", ""));
         return (
           <div className="space-y-4">
-            {renderTextInput("businessService1Title", "Service Title", properties.businessService1Title)}
-            {renderTextArea("businessService1Description", "Service Description", properties.businessService1Description, 3)}
+            {renderTextInput(
+              `businessFeature${featureIndex}Title`,
+              "Feature Title",
+              properties[`businessFeature${featureIndex}Title`] || ""
+            )}
+            {renderTextArea(
+              `businessFeature${featureIndex}Description`,
+              "Feature Description",
+              properties[`businessFeature${featureIndex}Description`] || "",
+              3
+            )}
           </div>
         );
-        
-      case "businessService2":
+
+      // Navbar
+      case "businessNavbarLogo":
         return (
           <div className="space-y-4">
-            {renderTextInput("businessService2Title", "Service Title", properties.businessService2Title)}
-            {renderTextArea("businessService2Description", "Service Description", properties.businessService2Description, 3)}
+            {renderTextInput("businessNavbarLogoText", "Logo Text", properties.businessNavbarLogoText || "VoiceCalc")}
+            {renderTextInput("businessNavbarLogoInitials", "Logo Initials", properties.businessNavbarLogoInitials || "VC")}
           </div>
         );
-        
-      case "businessService3":
+      
+      case "businessNavbarSignIn":
+        return renderTextInput("businessNavbarSignInText", "Sign In Text", properties.businessNavbarSignInText || "Sign In");
+      
+      case "businessNavbarCTA":
+        return renderTextInput("businessNavbarCTAText", "CTA Text", properties.businessNavbarCTAText || "Download");
+      
+      // Demo
+      case "businessDemoTagline":
+        return renderTextInput("businessDemoTagline", "Tagline", properties.businessDemoTagline || "Experience VoiceCalc");
+      
+      case "businessDemoTitle":
+        return renderTextArea("businessDemoTitle", "Title", properties.businessDemoTitle || "Intuitive Design for Every Calculation Need", 2);
+      
+      case "businessDemoSubtitle":
+        return renderTextArea("businessDemoSubtitle", "Subtitle", properties.businessDemoSubtitle || "Switch between different calculator modes and see how the interface adapts to your needs.", 3);
+      
+      case "businessDemoSectionTitle":
+        return renderTextInput("businessDemoSectionTitle", "Section Title", properties.businessDemoSectionTitle || "Demo Title");
+      
+      case "businessDemoSectionDescription":
+        return renderTextArea("businessDemoSectionDescription", "Section Description", properties.businessDemoSectionDescription || "This is a demo description", 3);
+      
+      // Download
+      case "businessDownloadTagline":
+        return renderTextInput("businessDownloadTagline", "Tagline", properties.businessDownloadTagline || "Download");
+      
+      case "businessDownloadTitle":
+        return renderTextArea("businessDownloadTitle", "Title", properties.businessDownloadTitle || "Download Title", 2);
+      
+      case "businessDownloadSubtitle":
+        return renderTextArea("businessDownloadSubtitle", "Subtitle", properties.businessDownloadSubtitle || "Download Subtitle", 3);
+      
+      case "businessDownloadMacButton":
+        return renderTextInput("businessDownloadMacButtonText", "Mac Button Text", properties.businessDownloadMacButtonText || "Download for Mac");
+      
+      case "businessDownloadWindowsButton":
+        return renderTextInput("businessDownloadWindowsButtonText", "Windows Button Text", properties.businessDownloadWindowsButtonText || "Download for Windows");
+      
+      // Footer
+      case "businessFooterLogo":
         return (
           <div className="space-y-4">
-            {renderTextInput("businessService3Title", "Service Title", properties.businessService3Title)}
-            {renderTextArea("businessService3Description", "Service Description", properties.businessService3Description, 3)}
+            {renderTextInput("businessFooterLogoText", "Logo Text", properties.businessFooterLogoText || "VoiceCalc")}
+            {renderTextInput("businessFooterLogoInitials", "Logo Initials", properties.businessFooterLogoInitials || "VC")}
           </div>
         );
-        
-      case "businessCtaTitle":
-        return renderTextInput("businessCtaTitle", "CTA Title", properties.businessCtaTitle || "Ready to Transform Your Business?");
-        
-      case "businessCtaText":
-        return renderTextArea("businessCtaText", "CTA Text", properties.businessCtaText || "Get in touch with our team to learn how we can help you achieve your business goals.", 3);
-        
-      case "businessCtaButton2":
-        return renderTextInput("businessCtaButtonText", "Button Text", properties.businessCtaButtonText || "Contact Us Today");
-        
-      case "businessFooterCompany":
-        return (
-          <div className="space-y-4">
-            {renderTextInput("businessTagline", "Business Tagline", properties.businessTagline)}
-            {renderTextInput("businessCopyright", "Copyright Text", properties.businessCopyright || `© ${new Date().getFullYear()} ${properties.businessName}. All rights reserved.`)}
-          </div>
-        );
-        
-      case "businessFooterContact":
-        return (
-          <div className="space-y-4">
-            {renderTextInput("businessEmail", "Email Address", properties.businessEmail || "info@acmeinc.com")}
-            {renderTextInput("businessPhone", "Phone Number", properties.businessPhone || "+1 (555) 123-4567")}
-            {renderTextInput("businessAddress", "Business Address", properties.businessAddress || "123 Business St, City, State")}
-          </div>
-        );
-        
-      case "businessNavbar":
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium">Navigation Items</label>
-              {(properties.navItems || []).map((item: NavItem, index: number) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <Input
-                    value={item.label}
-                    onChange={(e) => {
-                      const newItems = [...(properties.navItems || [])];
-                      newItems[index] = { ...item, label: e.target.value };
-                      updateProperty("navItems", newItems);
-                    }}
-                    placeholder="Label"
-                    className="flex-1"
-                  />
-                  <Input
-                    value={item.href}
-                    onChange={(e) => {
-                      const newItems = [...(properties.navItems || [])];
-                      newItems[index] = { ...item, href: e.target.value };
-                      updateProperty("navItems", newItems);
-                    }}
-                    placeholder="Link (#section)"
-                    className="flex-1"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      const newItems = [...(properties.navItems || [])];
-                      newItems.splice(index, 1);
-                      updateProperty("navItems", newItems);
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const newItems = [...(properties.navItems || []), { label: "New Item", href: "#" }];
-                  updateProperty("navItems", newItems);
-                }}
-                className="w-full mt-2"
-              >
-                Add Navigation Item
-              </Button>
-            </div>
-          </div>
-        );
-        
+      
+      case "businessFooterDescription":
+        return renderTextArea("businessFooterDescription", "Description", properties.businessFooterDescription || "The smart calculator that listens and adapts", 3);
+      
+      case "businessFooterCopyright":
+        return renderTextInput("businessFooterCopyrightText", "Copyright Text", properties.businessFooterCopyrightText || "VoiceCalc");
+      
+      // Dynamic elements
       default:
-        return (
-          <div className="flex h-40 items-center justify-center text-center text-sm text-muted-foreground">
-            <p>Select an element to edit its content</p>
-          </div>
-        );
+        // Handle navbar links
+        if (activeElement?.startsWith("businessNavbarLink")) {
+          const index = parseInt(activeElement.replace("businessNavbarLink", ""));
+          return renderTextInput(`businessNavbarLink${index}Text`, "Link Text", properties[`businessNavbarLink${index}Text`] || "Link");
+        }
+        
+        // Handle demo features
+        if (activeElement?.startsWith("businessDemoFeature")) {
+          const index = parseInt(activeElement.replace("businessDemoFeature", ""));
+          return (
+            <div className="space-y-4">
+              {renderTextInput(`businessDemoFeature${index}Title`, "Feature Title", properties[`businessDemoFeature${index}Title`] || `Feature ${index + 1}`)}
+              {renderTextArea(`businessDemoFeature${index}Description`, "Feature Description", properties[`businessDemoFeature${index}Description`] || `Description of Feature ${index + 1}`, 3)}
+            </div>
+          );
+        }
+        
+        // Handle download features
+        if (activeElement?.startsWith("businessDownloadFeature")) {
+          const index = parseInt(activeElement.replace("businessDownloadFeature", ""));
+          return (
+            <div className="space-y-4">
+              {renderTextInput(`businessDownloadFeature${index}Title`, "Feature Title", properties[`businessDownloadFeature${index}Title`] || `Feature ${index + 1}`)}
+              {renderTextArea(`businessDownloadFeature${index}Description`, "Feature Description", properties[`businessDownloadFeature${index}Description`] || `Description of Feature ${index + 1}`, 3)}
+            </div>
+          );
+        }
+        
+        // Handle footer section titles
+        if (activeElement?.startsWith("businessFooterSection") && activeElement.endsWith("Title")) {
+          const index = parseInt(activeElement.replace("businessFooterSection", "").replace("Title", ""));
+          return renderTextInput(`businessFooterSection${index}Title`, "Section Title", properties[`businessFooterSection${index}Title`] || "Section Title");
+        }
+        
+        // Handle footer section links
+        if (activeElement?.startsWith("businessFooterSection") && activeElement.includes("Link")) {
+          const matches = activeElement.match(/businessFooterSection(\d+)Link(\d+)/);
+          if (matches) {
+            const [_, sectionIndex, linkIndex] = matches;
+            return renderTextInput(`businessFooterSection${sectionIndex}Link${linkIndex}Text`, "Link Text", properties[`businessFooterSection${sectionIndex}Link${linkIndex}Text`] || "Link");
+          }
+        }
+        
+        // Handle footer legal links
+        if (activeElement?.startsWith("businessFooterLegalLink")) {
+          const index = parseInt(activeElement.replace("businessFooterLegalLink", ""));
+          return renderTextInput(`businessFooterLegalLink${index}Text`, "Link Text", properties[`businessFooterLegalLink${index}Text`] || "Legal Link");
+        }
+        
+        return null;
     }
   }
   
@@ -798,62 +821,145 @@ export function PropertiesPanel() {
       </div>
       <ScrollArea className="h-[calc(100vh-3rem)]">
         <div className="p-6">
-          {/* Fonts Section */}
-          <div className="mb-8">
-            <h3 className="text-sm font-medium mb-4">Fonts</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {fontOptions.map((font, index) => (
-                <button
-                  key={index}
-                  className={cn(
-                    "flex flex-col items-center justify-center p-4 rounded-lg border bg-card hover:bg-accent transition-colors",
-                    properties.fontFamily === font.value && "border-primary",
-                    font.previewClass
-                  )}
-                  onClick={() => handleFontChange(font.value)}
-                >
-                  <div className="text-2xl mb-2">Aa</div>
-                  <div className="text-xs text-muted-foreground">{font.name}</div>
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Element-specific settings */}
+          {activeElement && (
+            <Tabs defaultValue="content" className="w-full">
+              <TabsList className="w-full grid grid-cols-3 mb-4">
+                <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="design">Design</TabsTrigger>
+                <TabsTrigger value="themes">Themes</TabsTrigger>
+              </TabsList>
 
-          {/* Themes Section */}
-          <div>
-            <h3 className="text-sm font-medium mb-4">Themes</h3>
-            <div className="space-y-3">
-              {themeOptions.map((theme, themeIndex) => (
-                <div key={themeIndex} className="space-y-2">
-                  <div className="text-xs text-muted-foreground">{theme.name}</div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {theme.colors.map((colorSet, colorIndex) => (
+              <TabsContent value="content" className="mt-0">
+                {renderContentProperties()}
+              </TabsContent>
+
+              <TabsContent value="design" className="mt-0">
+                {renderDesignProperties()}
+              </TabsContent>
+
+              <TabsContent value="themes" className="mt-0">
+                {/* Fonts Section */}
+                <div className="mb-8">
+                  <h3 className="text-sm font-medium mb-4">Fonts</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {fontOptions.map((font, index) => (
                       <button
-                        key={`${themeIndex}-${colorIndex}`}
+                        key={index}
                         className={cn(
-                          "h-8 rounded-md overflow-hidden hover:ring-2 ring-offset-2 ring-offset-background transition-all",
-                          JSON.stringify(properties.colors) === JSON.stringify(colorSet) 
-                            ? "ring-2 ring-primary" 
-                            : "hover:ring-primary"
+                          "flex flex-col items-center justify-center p-4 rounded-lg border bg-card hover:bg-accent transition-colors",
+                          properties.fontFamily === font.value && "border-primary",
+                          font.previewClass
                         )}
-                        onClick={() => handleColorChange(colorSet)}
+                        onClick={() => handleFontChange(font.value)}
                       >
-                        <div className="flex flex-col h-full">
-                          {colorSet.map((color, i) => (
-                            <div
-                              key={i}
-                              className="flex-1"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
+                        <div className="text-2xl mb-2">Aa</div>
+                        <div className="text-xs text-muted-foreground">{font.name}</div>
                       </button>
                     ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+
+                {/* Theme Colors Section */}
+                <div>
+                  <h3 className="text-sm font-medium mb-4">Theme Colors</h3>
+                  <div className="space-y-3">
+                    {themeOptions.map((theme, themeIndex) => (
+                      <div key={themeIndex} className="space-y-2">
+                        <div className="text-xs text-muted-foreground">{theme.name}</div>
+                        <div className="grid grid-cols-3 gap-2">
+                          {theme.colors.map((colorSet, colorIndex) => (
+                            <button
+                              key={`${themeIndex}-${colorIndex}`}
+                              className={cn(
+                                "h-8 rounded-md overflow-hidden hover:ring-2 ring-offset-2 ring-offset-background transition-all",
+                                JSON.stringify(properties.colors) === JSON.stringify(colorSet) 
+                                  ? "ring-2 ring-primary" 
+                                  : "hover:ring-primary"
+                              )}
+                              onClick={() => handleColorChange(colorSet)}
+                            >
+                              <div className="flex flex-col h-full">
+                                {colorSet.map((color, i) => (
+                                  <div
+                                    key={i}
+                                    className="flex-1"
+                                    style={{ backgroundColor: color }}
+                                  />
+                                ))}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
+
+          {/* Show global settings when no element is selected */}
+          {!activeElement && (
+            <>
+              {/* Fonts Section */}
+              <div className="mb-8">
+                <h3 className="text-sm font-medium mb-4">Fonts</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {fontOptions.map((font, index) => (
+                    <button
+                      key={index}
+                      className={cn(
+                        "flex flex-col items-center justify-center p-4 rounded-lg border bg-card hover:bg-accent transition-colors",
+                        properties.fontFamily === font.value && "border-primary",
+                        font.previewClass
+                      )}
+                      onClick={() => handleFontChange(font.value)}
+                    >
+                      <div className="text-2xl mb-2">Aa</div>
+                      <div className="text-xs text-muted-foreground">{font.name}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Themes Section */}
+              <div>
+                <h3 className="text-sm font-medium mb-4">Theme Colors</h3>
+                <div className="space-y-3">
+                  {themeOptions.map((theme, themeIndex) => (
+                    <div key={themeIndex} className="space-y-2">
+                      <div className="text-xs text-muted-foreground">{theme.name}</div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {theme.colors.map((colorSet, colorIndex) => (
+                          <button
+                            key={`${themeIndex}-${colorIndex}`}
+                            className={cn(
+                              "h-8 rounded-md overflow-hidden hover:ring-2 ring-offset-2 ring-offset-background transition-all",
+                              JSON.stringify(properties.colors) === JSON.stringify(colorSet) 
+                                ? "ring-2 ring-primary" 
+                                : "hover:ring-primary"
+                            )}
+                            onClick={() => handleColorChange(colorSet)}
+                          >
+                            <div className="flex flex-col h-full">
+                              {colorSet.map((color, i) => (
+                                <div
+                                  key={i}
+                                  className="flex-1"
+                                  style={{ backgroundColor: color }}
+                                />
+                              ))}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </ScrollArea>
     </div>

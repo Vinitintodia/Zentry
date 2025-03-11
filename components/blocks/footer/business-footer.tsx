@@ -23,6 +23,22 @@ interface BusinessFooterProps {
     }>;
   }>;
   theme?: string;
+  logoText?: string;
+  description?: string;
+  footerLinks?: Array<{
+    title: string;
+    links: Array<{
+      label: string;
+      href: string;
+    }>;
+  }>;
+  copyrightText?: string;
+  legalLinks?: Array<{
+    label: string;
+    href: string;
+  }>;
+  setActiveElement?: (element: string) => void;
+  activeElement?: string;
 }
 
 export function BusinessFooter({
@@ -66,174 +82,162 @@ export function BusinessFooter({
       ]
     }
   ],
-  theme = "light"
+  theme = "light",
+  logoText = "VC",
+  description = "The smart calculator that listens and adapts",
+  footerLinks = [
+    {
+      title: "Product",
+      links: [
+        { label: "Features", href: "#features" },
+        { label: "Demo", href: "#demo" },
+        { label: "Download", href: "#download" },
+        { label: "Pricing", href: "#" }
+      ]
+    },
+    {
+      title: "Resources",
+      links: [
+        { label: "Documentation", href: "#" },
+        { label: "Tutorials", href: "#" },
+        { label: "Blog", href: "#" },
+        { label: "Support", href: "#" }
+      ]
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "About", href: "#about" },
+        { label: "Careers", href: "#" },
+        { label: "Privacy", href: "#" },
+        { label: "Terms", href: "#" }
+      ]
+    }
+  ],
+  copyrightText = "VoiceCalc",
+  legalLinks = [
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "#" },
+    { label: "Cookies", href: "#" }
+  ],
+  setActiveElement,
+  activeElement
 }: BusinessFooterProps) {
   const isDark = theme === 'dark';
-  const { deviceView } = useEditor();
+  const { deviceView, properties } = useEditor();
   
   const isMobileView = deviceView === "mobile";
   const isTabletView = deviceView === "tablet";
   
   return (
-    <footer id="about" className={cn(
-      "border-t",
-      isDark 
-        ? "bg-gray-900 border-gray-800" 
-        : "bg-brand-gray-light/30 border-gray-200/50",
-      isMobileView ? "pt-10 pb-6" : isTabletView ? "pt-12 pb-6" : "pt-16 pb-8"
+    <footer className={cn(
+      "template-container relative overflow-hidden border-t border-[var(--template-border)]",
+      isMobileView ? "py-8" : isTabletView ? "py-12" : "py-16"
     )}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container px-4 md:px-6">
         <div className={cn(
           "grid gap-8",
-          isMobileView ? "grid-cols-1" : isTabletView ? "grid-cols-2" : "grid-cols-5"
+          isMobileView ? "grid-cols-1" : isTabletView ? "grid-cols-2" : "grid-cols-4"
         )}>
-          {/* Company Info */}
-          <div className={cn(
-            isMobileView ? "text-center" : isTabletView ? "col-span-2" : "col-span-2"
-          )}>
-            <div className={cn(
-              "flex items-center gap-2 mb-4",
-              isMobileView ? "justify-center" : ""
-            )}>
+          {/* Brand */}
+          <div className="space-y-4">
+            <div 
+              className={cn(
+                "flex items-center space-x-2",
+                activeElement === "businessFooterLogo" && "ring-2 ring-[var(--template-primary)]"
+              )}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveElement?.("businessFooterLogo");
+              }}
+              style={{ fontFamily: properties.fontFamily }}
+            >
               <div className={cn(
-                "rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold",
-                isMobileView ? "w-8 h-8" : "w-10 h-10"
+                "rounded-lg bg-[var(--template-primary)] text-[var(--template-primary-foreground)] flex items-center justify-center font-semibold",
+                isMobileView ? "w-8 h-8 text-lg" : "w-10 h-10 text-xl"
               )}>
-                {logoInitials}
+                {properties.businessFooterLogoInitials || logoInitials}
               </div>
               <span className={cn(
-                "font-medium",
-                isMobileView ? "text-base" : "text-lg",
-                isDark ? "text-white" : ""
+                "font-semibold text-[var(--template-foreground)]",
+                isMobileView ? "text-lg" : "text-xl"
               )}>
-                {companyName}
+                {properties.businessFooterLogoText || logoText}
               </span>
             </div>
-            <p className={cn(
-              "mb-6",
-              isMobileView ? "text-sm max-w-[280px] mx-auto" : "max-w-md",
-              isDark ? "text-gray-400" : "text-muted-foreground"
-            )}>
-              {tagline}
+            <p 
+              className={cn(
+                "text-sm text-[var(--template-muted-foreground)]",
+                activeElement === "businessFooterDescription" && "ring-2 ring-[var(--template-primary)]"
+              )}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveElement?.("businessFooterDescription");
+              }}
+              style={{ fontFamily: properties.fontFamily }}
+            >
+              {properties.businessFooterDescription || description}
             </p>
-            
-            <div className={cn(
-              "space-y-3",
-              isMobileView ? "text-center" : ""
-            )}>
-              <div className={cn(
-                "flex items-start gap-3",
-                isMobileView ? "justify-center text-xs" : "text-sm"
-              )}>
-                <MapPin className={cn(
-                  "shrink-0 mt-0.5",
-                  isMobileView ? "h-4 w-4" : "h-5 w-5",
-                  isDark ? "text-brand-blue-light" : "text-brand-blue"
-                )} />
-                <span className={isDark ? "text-gray-400" : "text-muted-foreground"}>
-                  {address}
-                </span>
-              </div>
-              <div className={cn(
-                "flex items-center gap-3",
-                isMobileView ? "justify-center text-xs" : "text-sm"
-              )}>
-                <Mail className={cn(
-                  "shrink-0",
-                  isMobileView ? "h-4 w-4" : "h-5 w-5",
-                  isDark ? "text-brand-blue-light" : "text-brand-blue"
-                )} />
-                <a 
-                  href={`mailto:${email}`} 
-                  className={cn(
-                    "transition-colors",
-                    isDark 
-                      ? "text-gray-400 hover:text-brand-blue-light" 
-                      : "text-muted-foreground hover:text-brand-blue"
-                  )}
-                >
-                  {email}
-                </a>
-              </div>
-              <div className={cn(
-                "flex items-center gap-3",
-                isMobileView ? "justify-center text-xs" : "text-sm"
-              )}>
-                <Phone className={cn(
-                  "shrink-0",
-                  isMobileView ? "h-4 w-4" : "h-5 w-5",
-                  isDark ? "text-brand-blue-light" : "text-brand-blue"
-                )} />
-                <a 
-                  href={`tel:${phone.replace(/\D/g, '')}`} 
-                  className={cn(
-                    "transition-colors",
-                    isDark 
-                      ? "text-gray-400 hover:text-brand-blue-light" 
-                      : "text-muted-foreground hover:text-brand-blue"
-                  )}
-                >
-                  {phone}
-                </a>
-              </div>
-            </div>
-            
-            <div className={cn(
-              "flex gap-4 mt-6",
-              isMobileView ? "justify-center" : ""
-            )}>
+            <div className="flex space-x-3">
               {socialLinks.map((link, index) => (
-                <a 
+                <a
                   key={index}
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={cn(
-                    "rounded-full flex items-center justify-center transition-colors",
-                    isDark 
-                      ? "bg-gray-800 border border-gray-700 text-gray-400 hover:text-brand-blue-light hover:border-brand-blue-light/30" 
-                      : "bg-white border border-gray-200 text-muted-foreground hover:text-brand-blue hover:border-brand-blue/30",
-                    isMobileView ? "w-8 h-8" : "w-10 h-10"
+                    "rounded-full p-2 transition-colors duration-200",
+                    "hover:bg-[var(--template-primary)]/10 text-[var(--template-muted-foreground)] hover:text-[var(--template-primary)]",
+                    activeElement === `businessFooterSocialLink${index}` && "ring-2 ring-[var(--template-primary)]"
                   )}
-                  aria-label={link.name}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setActiveElement?.(`businessFooterSocialLink${index}`);
+                  }}
+                  style={{ fontFamily: properties.fontFamily }}
                 >
-                  {React.cloneElement(link.icon as React.ReactElement, {
-                    className: cn(
-                      isMobileView ? "h-4 w-4" : "h-5 w-5"
-                    )
-                  })}
+                  {link.icon}
                 </a>
               ))}
             </div>
           </div>
           
-          {/* Navigation Links */}
-          {navLinks.map((section, index) => (
-            <div key={index} className={cn(
-              isMobileView ? "text-center" : ""
-            )}>
-              <h3 className={cn(
-                "font-medium mb-4",
-                isMobileView ? "text-base" : "text-lg",
-                isDark ? "text-white" : ""
-              )}>
-                {section.title}
-              </h3>
-              <ul className={cn(
-                "space-y-3",
-                isMobileView ? "text-center" : ""
-              )}>
+          {/* Links */}
+          {footerLinks.map((section, index) => (
+            <div key={index} className="space-y-4">
+              <h4 
+                className={cn(
+                  "font-semibold text-[var(--template-foreground)]",
+                  isMobileView ? "text-base" : "text-lg",
+                  activeElement === `businessFooterSection${index}Title` && "ring-2 ring-[var(--template-primary)]"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveElement?.(`businessFooterSection${index}Title`);
+                }}
+                style={{ fontFamily: properties.fontFamily }}
+              >
+                {properties[`businessFooterSection${index}Title`] || section.title}
+              </h4>
+              <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <a 
+                    <a
                       href={link.href}
                       className={cn(
-                        "transition-colors",
-                        isMobileView ? "text-xs" : "text-sm",
-                        isDark 
-                          ? "text-gray-400 hover:text-brand-blue-light" 
-                          : "text-muted-foreground hover:text-brand-blue"
+                        "text-sm text-[var(--template-muted-foreground)] hover:text-[var(--template-primary)] transition-colors duration-200",
+                        isMobileView ? "text-sm" : "text-base",
+                        activeElement === `businessFooterSection${index}Link${linkIndex}` && "ring-2 ring-[var(--template-primary)]"
                       )}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setActiveElement?.(`businessFooterSection${index}Link${linkIndex}`);
+                      }}
+                      style={{ fontFamily: properties.fontFamily }}
                     >
-                      {link.label}
+                      {properties[`businessFooterSection${index}Link${linkIndex}Text`] || link.label}
                     </a>
                   </li>
                 ))}
@@ -242,56 +246,45 @@ export function BusinessFooter({
           ))}
         </div>
         
+        {/* Bottom */}
         <div className={cn(
-          "mt-16 pt-8 border-t flex flex-col md:flex-row justify-between items-center",
-          isDark ? "border-gray-800" : "border-gray-200/50"
+          "flex flex-col sm:flex-row justify-between items-center border-t border-[var(--template-border)]",
+          isMobileView ? "mt-6 pt-6 space-y-2" : "mt-8 pt-8"
         )}>
-          <p className={cn(
-            isMobileView ? "text-xs" : "text-sm",
-            isDark ? "text-gray-500" : "text-muted-foreground"
-          )}>
-            © {new Date().getFullYear()} {companyName}. All rights reserved.
+          <p 
+            className={cn(
+              "text-[var(--template-muted-foreground)]",
+              isMobileView ? "text-xs text-center" : "text-sm",
+              activeElement === "businessFooterCopyright" && "ring-2 ring-[var(--template-primary)]"
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveElement?.("businessFooterCopyright");
+            }}
+            style={{ fontFamily: properties.fontFamily }}
+          >
+            © {new Date().getFullYear()} {properties.businessFooterCopyrightText || copyrightText}. All rights reserved.
           </p>
-          <div className={cn(
-            "flex gap-4 md:gap-6",
-            isMobileView ? "mt-4 flex-wrap justify-center" : "mt-0"
-          )}>
-            <a 
-              href="#" 
-              className={cn(
-                "transition-colors",
-                isMobileView ? "text-xs" : "text-sm",
-                isDark 
-                  ? "text-gray-500 hover:text-brand-blue-light" 
-                  : "text-muted-foreground hover:text-brand-blue"
-              )}
-            >
-              Privacy Policy
-            </a>
-            <a 
-              href="#" 
-              className={cn(
-                "transition-colors",
-                isMobileView ? "text-xs" : "text-sm",
-                isDark 
-                  ? "text-gray-500 hover:text-brand-blue-light" 
-                  : "text-muted-foreground hover:text-brand-blue"
-              )}
-            >
-              Terms of Service
-            </a>
-            <a 
-              href="#" 
-              className={cn(
-                "transition-colors",
-                isMobileView ? "text-xs" : "text-sm",
-                isDark 
-                  ? "text-gray-500 hover:text-brand-blue-light" 
-                  : "text-muted-foreground hover:text-brand-blue"
-              )}
-            >
-              Cookies
-            </a>
+          <div className="flex space-x-4">
+            {legalLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.href}
+                className={cn(
+                  "text-[var(--template-muted-foreground)] hover:text-[var(--template-primary)] transition-colors duration-200",
+                  isMobileView ? "text-xs" : "text-sm",
+                  activeElement === `businessFooterLegalLink${index}` && "ring-2 ring-[var(--template-primary)]"
+                )}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setActiveElement?.(`businessFooterLegalLink${index}`);
+                }}
+                style={{ fontFamily: properties.fontFamily }}
+              >
+                {properties[`businessFooterLegalLink${index}Text`] || link.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

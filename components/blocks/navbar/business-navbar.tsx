@@ -15,6 +15,7 @@ interface BusinessNavbarProps {
   logoInitials?: string;
   navItems?: NavItem[];
   setActiveElement?: (element: string) => void;
+  activeElement?: string;
 }
 
 export function BusinessNavbar({ 
@@ -26,7 +27,8 @@ export function BusinessNavbar({
     { label: "Download", href: "#download" },
     { label: "About", href: "#about" }
   ],
-  setActiveElement
+  setActiveElement,
+  activeElement
 }: BusinessNavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,16 +44,21 @@ export function BusinessNavbar({
     navbarSticky = true,
     navbarFontSize = "0.875rem",
     navbarFontWeight = "500",
-    navbarFontFamily = "inherit",
+    navbarFontFamily = "var(--template-font-primary)",
     navbarButtonVariant = "default",
     navbarButtonRadius = "0.5rem",
-    navbarButtonBgColor = "var(--primary)",
-    navbarButtonTextColor = "var(--primary-foreground)",
+    navbarButtonBgColor = "var(--template-primary)",
+    navbarButtonTextColor = "var(--template-primary-foreground)",
     navbarLogoSize = "1.125rem",
     navbarLogoWeight = "600",
     navbarLogoColor = "inherit",
-    navbarLogoBgColor = "var(--primary)",
+    navbarLogoBgColor = "var(--template-primary)",
     navbarLogoRadius = "0.5rem",
+    businessNavbarLogoText = logoText,
+    businessNavbarLogoInitials = logoInitials,
+    businessNavbarSignInText = "Sign In",
+    businessNavbarCTAText = "Download",
+    businessNavbarLinks = navItems
   } = properties;
   
   useEffect(() => {
@@ -80,11 +87,12 @@ export function BusinessNavbar({
   return (
     <header 
       className={cn(
-        "top-0 left-0 right-0 z-50 transition-all duration-300",
+        "top-0 left-0 right-0 z-50 transition-all duration-300 template-container",
         navbarSticky ? "sticky" : "relative",
         scrolled || mobileMenuOpen
-          ? "bg-background/80 backdrop-blur-md border-b"
-          : ""
+          ? "bg-[var(--template-background)]/80 backdrop-blur-md border-b"
+          : "",
+        activeElement === "businessNavbar" && "ring-2 ring-[var(--template-primary)]"
       )}
       style={{ 
         backgroundColor: navbarBgColor === 'transparent' ? 'transparent' : navbarBgColor,
@@ -92,12 +100,18 @@ export function BusinessNavbar({
         fontFamily: navbarFontFamily,
         position: navbarSticky ? 'sticky' : 'relative'
       }}
-      onClick={() => setActiveElement?.("businessNavbar")}
+      onClick={(e) => {
+        e.stopPropagation();
+        setActiveElement?.("businessNavbar");
+      }}
     >
       <div className="px-4 sm:px-6 md:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16">
           <div 
-            className="flex items-center gap-2"
+            className={cn(
+              "flex items-center gap-2",
+              activeElement === "businessNavbarLogo" && "ring-2 ring-[var(--template-primary)]"
+            )}
             onClick={(e) => {
               e.stopPropagation();
               setActiveElement?.("businessNavbarLogo");
@@ -114,7 +128,7 @@ export function BusinessNavbar({
                 fontWeight: navbarLogoWeight
               }}
             >
-              {logoInitials}
+              {properties.businessNavbarLogoInitials || businessNavbarLogoInitials}
             </div>
             <span className={cn(
               "font-medium",
@@ -125,7 +139,7 @@ export function BusinessNavbar({
               fontWeight: navbarLogoWeight,
               color: navbarLogoColor
             }}>
-              {logoText}
+              {properties.businessNavbarLogoText || businessNavbarLogoText}
             </span>
           </div>
           
@@ -133,12 +147,19 @@ export function BusinessNavbar({
             "items-center space-x-8",
             isMobileView ? "hidden" : "flex"
           )}>
-            {navItems.map((item, index) => (
+            {(businessNavbarLinks || navItems).map((item: NavItem, index: number) => (
               <a 
                 key={index} 
                 href={item.href} 
-                className="transition-colors hover:text-foreground"
-                onClick={(e) => scrollToSection(e, item.href)}
+                className={cn(
+                  "transition-colors hover:text-[var(--template-foreground)]",
+                  activeElement === `businessNavbarLink${index}` && "ring-2 ring-[var(--template-primary)]"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveElement?.(`businessNavbarLink${index}`);
+                  scrollToSection(e, item.href);
+                }}
                 style={{
                   fontSize: navbarFontSize,
                   fontWeight: navbarFontWeight,
@@ -146,7 +167,7 @@ export function BusinessNavbar({
                   fontFamily: navbarFontFamily
                 }}
               >
-                {item.label}
+                {properties[`businessNavbarLink${index}Text`] || item.label}
               </a>
             ))}
           </nav>
@@ -156,7 +177,7 @@ export function BusinessNavbar({
               variant="ghost" 
               size="icon"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-foreground"
+              className="text-[var(--template-foreground)]"
             >
               <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -166,7 +187,10 @@ export function BusinessNavbar({
             <Button 
               variant="ghost" 
               size="sm" 
-              className={cn(isMobileView ? "hidden" : "flex")}
+              className={cn(
+                isMobileView ? "hidden" : "flex",
+                activeElement === "businessNavbarSignIn" && "ring-2 ring-[var(--template-primary)]"
+              )}
               style={{
                 fontSize: navbarFontSize,
                 fontWeight: navbarFontWeight,
@@ -179,14 +203,15 @@ export function BusinessNavbar({
                 setActiveElement?.("businessNavbarSignIn");
               }}
             >
-              Sign In
+              {properties.businessNavbarSignInText || businessNavbarSignInText}
             </Button>
             
             <Button 
               variant={navbarButtonVariant}
               size="sm" 
               className={cn(
-                isMobileView ? "hidden" : "flex"
+                isMobileView ? "hidden" : "flex",
+                activeElement === "businessNavbarCTA" && "ring-2 ring-[var(--template-primary)]"
               )}
               style={{
                 backgroundColor: navbarButtonBgColor,
@@ -202,7 +227,7 @@ export function BusinessNavbar({
                 scrollToSection(e, "#download");
               }}
             >
-              {properties.navbarCTAText || "Download"}
+              {properties.businessNavbarCTAText || businessNavbarCTAText}
             </Button>
 
             <Button
@@ -224,15 +249,22 @@ export function BusinessNavbar({
         <div className={cn(
           "overflow-hidden transition-all duration-300 border-t",
           isMobileView ? "block" : "hidden",
-          mobileMenuOpen ? "max-h-[400px] border-border" : "max-h-0 border-transparent"
+          mobileMenuOpen ? "max-h-[400px] border-[var(--template-border)]" : "max-h-0 border-transparent"
         )}>
           <nav className="px-4 py-4 flex flex-col gap-2">
-            {navItems.map((item, index) => (
+            {(businessNavbarLinks || navItems).map((item: NavItem, index: number) => (
               <a 
                 key={index} 
                 href={item.href} 
-                className="transition-colors py-2 px-2 rounded-lg hover:bg-muted"
-                onClick={(e) => scrollToSection(e, item.href)}
+                className={cn(
+                  "transition-colors py-2 px-2 rounded-lg hover:bg-[var(--template-muted)]",
+                  activeElement === `businessNavbarLink${index}` && "ring-2 ring-[var(--template-primary)]"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveElement?.(`businessNavbarLink${index}`);
+                  scrollToSection(e, item.href);
+                }}
                 style={{
                   fontSize: navbarFontSize,
                   fontWeight: navbarFontWeight,
@@ -240,31 +272,36 @@ export function BusinessNavbar({
                   fontFamily: navbarFontFamily
                 }}
               >
-                {item.label}
+                {properties[`businessNavbarLink${index}Text`] || item.label}
               </a>
             ))}
-            <div className="h-px bg-border my-2" />
             <Button 
-              size="sm" 
-              variant="outline"
-              className="w-full justify-center"
+              variant="ghost" 
+              size="sm"
+              className={cn(
+                "w-full justify-start px-2",
+                activeElement === "businessNavbarSignIn" && "ring-2 ring-[var(--template-primary)]"
+              )}
               style={{
                 fontSize: navbarFontSize,
                 fontWeight: navbarFontWeight,
-                borderRadius: navbarButtonRadius,
+                color: navbarTextColor === 'inherit' ? 'inherit' : navbarTextColor,
                 fontFamily: navbarFontFamily
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveElement?.("businessNavbarMobileSignIn");
+                setActiveElement?.("businessNavbarSignIn");
               }}
             >
-              Sign In
+              {properties.businessNavbarSignInText || businessNavbarSignInText}
             </Button>
             <Button 
               variant={navbarButtonVariant}
-              size="sm" 
-              className="w-full justify-center"
+              size="sm"
+              className={cn(
+                "w-full justify-start px-2",
+                activeElement === "businessNavbarCTA" && "ring-2 ring-[var(--template-primary)]"
+              )}
               style={{
                 backgroundColor: navbarButtonBgColor,
                 color: navbarButtonTextColor,
@@ -275,11 +312,11 @@ export function BusinessNavbar({
               }}
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveElement?.("businessNavbarMobileCTA");
+                setActiveElement?.("businessNavbarCTA");
                 scrollToSection(e, "#download");
               }}
             >
-              {properties.navbarCTAText || "Download"}
+              {properties.businessNavbarCTAText || businessNavbarCTAText}
             </Button>
           </nav>
         </div>
